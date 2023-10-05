@@ -1,0 +1,47 @@
+
+install.packages("tidyverse")
+install.packages("raster")
+install.packages("sf")
+install.packages("sp")
+install.packages("ggspatial")
+install.packages("ggplot2")
+install.packages("tidyr")
+
+
+library(tidyverse)
+library(raster)
+library(sf)
+library(sp)
+library(ggspatial)
+library(ggplot2)
+library(tidyr)
+
+setwd("~/Desktop/Curso de Mapas/Corregimientos")
+shp <- st_read("Corregimientos_of_Panama.shp")
+
+library(readxl)
+DATAMAP <- read_excel("~/Desktop/Curso de Mapas/Data/DATAMAP.xlsx")
+View(DATAMAP)
+
+shp %>%
+  ggplot() +
+  geom_sf()
+
+Mapa <- DATAMAP %>%
+  count("CORREGIMIE")
+
+Test <- left_join(shp, DATAMAP, by =c("CORREGIMIE" = "CORREGIMIE"))
+
+Test %>%
+  ggplot() +
+  geom_sf(aes(fill = n), color = "black") +
+  scale_fill_viridis_d(alpha = 0.75) +
+  theme_bw() +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  labs(title = "Cases in Panama",
+       subtitle = "Corregimientos",
+       fill = "Number de Casos")
+
+library(mapview)
+mapView(Test)
